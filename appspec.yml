@@ -1,0 +1,19 @@
+version: 0.0
+os: linux
+
+# S3의 / (전체 파일)을 EC2의 지정한 폴더로 이동시킴
+files:
+  - source: /
+    destination: /home/ubuntu/web-server
+
+permissions:
+  - object: /
+    owner: ubuntu
+    group: ubuntu
+
+# start-server.sh 에 있는 배포 작업 진행
+hooks:
+    ApplicationStart:
+      - location: scripts/start-server.sh
+        timeout: 60
+        runas: ubuntu
