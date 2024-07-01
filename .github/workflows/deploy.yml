@@ -1,4 +1,4 @@
-name: 컨테이너 기반 배포하기
+name: CodeDeploy 기반 배포하기
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  ContainerBased-Deploy-Job:
+  CodeDeployBased-Deploy-Job:
     runs-on: ubuntu-latest
     steps:
       - name: Github Repository 의 파일 가져오기
@@ -42,9 +42,10 @@ jobs:
       - name: S3 에 배포자료 업로드하기
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://for-web-server-04/$GITHUB_SHA.tar.gz
 
+# CodeDeploy에 생성한 배포그룹 production 에 정해놓은 배포 규칙에 따라 배포작업 진행
       - name: CodeDeploy를 활용해 EC2에 배포하기
         run: aws deploy create-deployment
           --application-name web-server
           --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name Production
+          --deployment-group-name production
           --s3-location bucket=for-web-server-04,bundleType=tgz,key=$GITHUB_SHA.tar.gz
